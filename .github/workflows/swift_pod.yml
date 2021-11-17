@@ -14,14 +14,32 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       name: Checkout swift project
-    - name: debug-1
-      run: pwd
-    - name: debug-2
-      run: ls -la
+    - name: Switch XCode Version
+      run: sudo xcode-select -s /Applications/Xcode_11.app
+#    - name: setup-cocoapods
+#      uses: maxim-lobanov/setup-cocoapods@v1
+#      with:
+#        podfile-path: Podfile.lock
+#    - name: Install Dependences
+#      run: |
+#        pod repo update
+#        pod install
+#      shell: bash
+#    - name: Test and Lint
+#      uses: ty0x2333/cocoapods-action@master
+#      with:
+#        additional_build_params: -destination 'platform=iOS Simulator,name=iPhone 11,OS=13.0'
+#        additional_lint_params: --private
 #    - name: swift version
 #      run: swift --version
 #    - name: xcode version
 #      run: xcodebuild -version
+     - uses: actions/setup-ruby@v1
+       with:
+         ruby-version: '2.7.2'
+     - uses: maierj/fastlane-action@v2.0.1
+       with:
+         lane: 'beta'
     - name: xcode info
       run: xcodebuild -list -project GoodAsOldPhones.xcodeproj
     - name: Build xcode
