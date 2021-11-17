@@ -14,8 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       name: Checkout swift project
-    - name: Switch XCode Version
-      run: sudo xcode-select -s /Applications/Xcode_11.app
+    - name: Check Swift path
+      run: xcode-select --print-path
+    - name: List Swift installed
+      run: system_profiler -json SPDeveloperToolsDataType | jq '.SPDeveloperToolsDataType[].spdevtools_path'
+#    - name: Switch XCode Version
+#      run: sudo xcode-select -s /Applications/Xcode_11.app
 #    - name: setup-cocoapods
 #      uses: maxim-lobanov/setup-cocoapods@v1
 #      with:
