@@ -26,8 +26,8 @@ jobs:
       run: xcodebuild -list -project GoodAsOldPhones.xcodeproj
     - name: Build xcode
       run: |
-          xcodebuild clean test -project "GoodAsOldPhones.xcodeproj" -scheme "Debug" -destination "platform=iOS Simulator,name=iPhone 12 Pro,OS=latest" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
-    - name: Build swift
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+          xcodebuild build -project "GoodAsOldPhones.xcodeproj" -scheme "GoodAsOldPhones" -destination "platform=iOS Simulator,name=iPhone 12 Pro,OS=latest" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
+#    - name: Build swift
+#      run: swift build -v
+#    - name: Run tests
+#      run: swift test -v
