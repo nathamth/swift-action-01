@@ -14,42 +14,71 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       name: Checkout swift project
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7.2'
+        bundler-cache: true
     - name: Check Swift path
       run: xcode-select --print-path
     - name: List Swift installed
       run: system_profiler -json SPDeveloperToolsDataType | jq '.SPDeveloperToolsDataType[].spdevtools_path'
 #    - name: Switch XCode Version
 #      run: sudo xcode-select -s /Applications/Xcode_11.app
-#    - name: setup-cocoapods
-#      uses: maxim-lobanov/setup-cocoapods@v1
-#      with:
-#        podfile-path: Podfile.lock
-#    - name: Install Dependences
-#      run: |
-#        pod repo update
-#        pod install
-#      shell: bash
-#    - name: Test and Lint
-#      uses: ty0x2333/cocoapods-action@master
-#      with:
-#        additional_build_params: -destination 'platform=iOS Simulator,name=iPhone 11,OS=13.0'
-#        additional_lint_params: --private
+    - name: setup-cocoapods
+      uses: maxim-lobanov/setup-cocoapods@v1
+      with:
+        podfile-path: Podfile.lock
+    - name: Install Dependences
+      run: |
+        pod repo update
+        pod install
+      shell: bash
+    - name: Test and Lint
+      uses: ty0x2333/cocoapods-action@master
+      with:
+        additional_build_params: -destination 'platform=iOS Simulator,name=iPhone 11,OS=13.0'
+        additional_lint_params: --private
 #    - name: swift version
 #      run: swift --version
 #    - name: xcode version
 #      run: xcodebuild -version
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '2.7.2'
-    - uses: maierj/fastlane-action@v2.0.1
-      with:
-        lane: 'beta'
     - name: xcode info
       run: xcodebuild -list -project GoodAsOldPhones.xcodeproj
     - name: Build xcode
       run: |
-          xcodebuild build -project "GoodAsOldPhones.xcodeproj" -scheme "GoodAsOldPhones" -destination "platform=iOS Simulator,name=iPhone 12 Pro,OS=latest" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
-#    - name: Build swift
-#      run: swift build -v
-#    - name: Run tests
-#      run: swift test -v
+        xcodebuild build -project "GoodAsOldPhones.xcodeproj" -scheme "GoodAsOldPhones" -destination "platform=iOS Simulator,name=iPhone 12 Pro,OS=latest" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
+    - name: debug xcode path
+      run: |
+        pwd
+        ls -la
+#    - name: Upload xcode
+#      uses: actions/upload-artifact@v1
+#      with:
+#        name: apk
+#        path: app/build/outputs/apk/production/release/app-production-release-unsigned.apk 
+#  release:
+#    name: Release APK
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download APK from build
+#        uses: actions/download-artifact@v1
+#        with:
+#          name: apk  
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }} 
+#        with:
+#          tag_name: ${{ github.ref }}
+#          release_name: Release ${{ github.ref }} 
+#      - name: Upload Release APK
+#        id: upload_release_asset
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: apk/app-production-release-unsigned.apk
+#          asset_name: app-production-release-unsigned.apk
+#          asset_content_type: application/zip
